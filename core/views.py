@@ -47,6 +47,11 @@ class ExaminationViewSet(ModelViewSet):
             queryset = queryset.filter(exam_type=exam_type)
 
         return queryset
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
 
 from rest_framework.views import APIView
 from rest_framework.response import Response

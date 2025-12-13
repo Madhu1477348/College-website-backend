@@ -36,6 +36,13 @@ class BranchSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ExaminationSerializer(serializers.ModelSerializer):
+    file = serializers.SerializerMethodField()
     class Meta:
         model = Examination
         fields = '__all__'
+    
+    def get_file(self, obj):
+        request = self.context.get('request')
+        if obj.file and request:
+            return request.build_absolute_uri(obj.file.url)
+        return None
