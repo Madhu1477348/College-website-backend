@@ -7,5 +7,9 @@ admin.site.register(Material)
 admin.site.register(Branch)
 admin.site.register(Subject)
 admin.site.register(Syllabus)
-admin.site.register(Examination)
+@admin.register(Examination)
+class ExaminationAdmin(admin.ModelAdmin):
+    list_display = ("title", "category", "exam_type", "date")
+    list_filter = ("category", "exam_type")
+    search_fields = ("title",)
 

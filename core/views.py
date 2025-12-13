@@ -1,35 +1,52 @@
-from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import AllowAny
+from .pagination import ExaminationPagination
 from .models import Staff, Notification, Material, Branch, Subject, Syllabus, Examination
 from .serializers import StaffSerializer, NotificationSerializer, MaterialSerializer, BranchSerializer, SubjectSerializer, SyllabusSerializer, ExaminationSerializer
 
-class StaffViewSet(viewsets.ModelViewSet):
+class StaffViewSet(ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
 
-class NotificationViewSet(viewsets.ModelViewSet):
+class NotificationViewSet(ModelViewSet):
     queryset = Notification.objects.all().order_by('-created_at')
     serializer_class = NotificationSerializer
 
-class MaterialViewSet(viewsets.ModelViewSet):
+class MaterialViewSet(ModelViewSet):
     queryset = Material.objects.all()
     serializer_class = MaterialSerializer
 
-class BranchViewSet(viewsets.ModelViewSet):
+class BranchViewSet(ModelViewSet):
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
 
-class SubjectViewSet(viewsets.ModelViewSet):
+class SubjectViewSet(ModelViewSet):
     queryset = Subject.objects.all()
     serializer_class = SubjectSerializer
 
-class SyllabusViewSet(viewsets.ModelViewSet):
+class SyllabusViewSet(ModelViewSet):
     queryset = Syllabus.objects.all()
     serializer_class = SyllabusSerializer
 
-class ExaminationViewSet(viewsets.ModelViewSet):
-    queryset = Examination.objects.all().order_by('-date')
+class ExaminationViewSet(ModelViewSet):
+    queryset = Examination.objects.all().order_by("-date")
     serializer_class = ExaminationSerializer
+    permission_classes = [AllowAny]
+    pagination_class = ExaminationPagination
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        category = self.request.query_params.get("category")
+        exam_type = self.request.query_params.get("exam_type")
+
+        if category:
+            queryset = queryset.filter(category=category)
+
+        if exam_type:
+            queryset = queryset.filter(exam_type=exam_type)
+
+        return queryset
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
