@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Staff, Notification, Material, Branch, Subject, Syllabus, Examination
+from .models import Staff, Notification, Material, Branch, Subject, Syllabus, Examination, Popup
 
 class StaffSerializer(serializers.ModelSerializer):
     class Meta:
@@ -46,3 +46,8 @@ class ExaminationSerializer(serializers.ModelSerializer):
         if obj.file and request:
             return request.build_absolute_uri(obj.file.url)
         return None
+
+class PopupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Popup
+        fields = ['image']

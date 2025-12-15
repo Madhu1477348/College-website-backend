@@ -136,3 +136,14 @@ class Examination(models.Model):
 
     def __str__(self):
         return f"{self.title} ({self.get_category_display()} - {self.get_exam_type_display()})"
+
+
+
+
+class Popup(models.Model):
+    image = models.ImageField(upload_to='popups/')  
+    active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return "Popup Image"

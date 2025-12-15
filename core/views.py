@@ -9,7 +9,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 # Import app-specific models and serializers
-from .models import Staff, Notification, Material, Branch, Subject, Syllabus, Examination
+from .models import Staff, Notification, Material, Branch, Subject, Syllabus, Examination,Popup
 from .pagination import ExaminationPagination
 from .serializers import (
     StaffSerializer, 
@@ -18,7 +18,8 @@ from .serializers import (
     BranchSerializer, 
     SubjectSerializer, 
     SyllabusSerializer, 
-    ExaminationSerializer
+    ExaminationSerializer,
+    PopupSerializer
 )
 from accounts.utils import Util
 
@@ -117,3 +118,14 @@ class ContactAPIView(APIView):
             return Response({"message": "Email sent successfully"}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+        
+# Popup ViewSet
+class PopupView(APIView):
+    def get(self, request):
+        popup = Popup.objects.filter(active=True).first()
+        if popup:
+            serializer = PopupSerializer(popup)
+            return Response(serializer.data)
+        return Response({"image": None})
