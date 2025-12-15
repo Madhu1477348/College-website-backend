@@ -78,9 +78,8 @@ REST_FRAMEWORK = {
 # 🔥 MIDDLEWARE — FIXED ORDER
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # static files
-
-    "corsheaders.middleware.CorsMiddleware",       # must be BEFORE CommonMiddleware
+    "corsheaders.middleware.CorsMiddleware",       
+    "whitenoise.middleware.WhiteNoiseMiddleware", 
     "django.middleware.common.CommonMiddleware",
 
     "django.contrib.sessions.middleware.SessionMiddleware",
