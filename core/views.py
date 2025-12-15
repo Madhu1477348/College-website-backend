@@ -3,7 +3,7 @@
 # ==========================================
 from rest_framework import status, viewsets
 from rest_framework.views import APIView
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from django.conf import settings
@@ -122,10 +122,12 @@ class ContactAPIView(APIView):
         
         
 # Popup ViewSet
-class PopupView(APIView):
-    def get(self, request):
-        popup = Popup.objects.filter(active=True).first()
-        if popup:
-            serializer = PopupSerializer(popup)
-            return Response(serializer.data)
-        return Response({"image": None})
+
+class PopupViewSet(viewsets.ModelViewSet):
+    queryset = Popup.objects.all().order_by("-created_at")
+    serializer_class = PopupSerializer
+
+    def get_permissions(self):
+        if self.request.method in ["GET"]:
+            return [AllowAny()]
+        return [IsAdminUser()]

@@ -140,10 +140,12 @@ class Examination(models.Model):
 
 
 
+
 class Popup(models.Model):
-    image = models.ImageField(upload_to='popups/')  
+    title = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(upload_to="popup/")
     active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    
+
     def __str__(self):
-        return "Popup Image"
+        return self.title or "Popup"

@@ -50,4 +50,4 @@ class ExaminationSerializer(serializers.ModelSerializer):
 class PopupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Popup
-        fields = ['image']
+        fields = '__all__'
