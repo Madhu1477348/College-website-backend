@@ -195,6 +195,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "core",
+    "accounts",
 ]
 
 # DRF Settings
@@ -247,6 +248,12 @@ DATABASES = {
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+
+# AUTHENTICATION BACKENDS
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # AUTH PASSWORD
 AUTH_PASSWORD_VALIDATORS = [
