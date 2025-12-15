@@ -39,9 +39,13 @@ class Material(models.Model):
         ('inter', 'Inter'),
         ('degree', 'Degree'),
     )
+    YEAR_CHOICES = (
+        ('1st Year', '1st Year'),
+        ('2nd Year', '2nd Year'),
+    )
     subject = models.CharField(max_length=100)
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='inter')
-    year = models.CharField(max_length=20)
+    year = models.CharField(max_length=20, choices=YEAR_CHOICES)
     file = models.FileField(upload_to='materials/')
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -54,13 +58,29 @@ class Branch(models.Model):
         ('inter', 'Inter'),
         ('degree', 'Degree'),
     )
-    name = models.CharField(max_length=100)  # e.g., "M.P.C", "B.Sc (CS)"
+
+    BRANCH_CHOICES = (
+        # Inter Branches
+        ('MPC', 'M.P.C'),
+        ('BiPC', 'Bi.P.C'),
+        ('CEC', 'C.E.C'),
+        ('MEC', 'M.E.C'),
+        ('MBiPC', 'M.Bi.P.C'),
+        
+        # Degree Branches
+        ('BSc', 'B.Sc'),
+        ('MPCs', 'M.P.Cs'),
+        ('BCom', 'B.Com'),
+        ('BZC', 'B.Z.C'),
+    )
+
+    name = models.CharField(max_length=100, choices=BRANCH_CHOICES)  
     course_type = models.CharField(max_length=20, choices=COURSE_TYPE_CHOICES)
     description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.name} ({self.get_course_type_display()})"
+        return f"{self.get_name_display()} ({self.get_course_type_display()})"
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -84,71 +104,7 @@ class Syllabus(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.subject.name}"
-class Examination(models.Model):
-    CATEGORY_CHOICES = (
-        ('inter', 'Inter'),
-        ('degree', 'Degree'),
-    )
 
-    EXAM_TYPE_CHOICES = (
-        ('unit', 'Unit Test'),
-        ('half', 'Half-Yearly'),
-        ('pre', 'Pre-Final'),
-        ('mid', 'Mid Exam'),
-        ('semester', 'Semester Exam'),
-    )
-
-    title = models.CharField(max_length=200)
-    category = models.CharField(
-        max_length=20,
-        choices=CATEGORY_CHOICES,
-        default='inter'
-    )
-    exam_type = models.CharField(
-        max_length=20,
-        choices=EXAM_TYPE_CHOICES
-    )
-    file = models.FileField(upload_to='examinations/')
-    date = models.DateField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.title} ({self.get_category_display()} - {self.get_exam_type_display()})"
-
-
-
-class Examination(models.Model):
-    CATEGORY_CHOICES = (
-        ('inter', 'Inter'),
-        ('degree', 'Degree'),
-    )
-
-    EXAM_TYPE_CHOICES = (
-        ('unit', 'Unit Test'),
-        ('half', 'Half-Yearly'),
-        ('pre', 'Pre-Final'),
-        ('mid', 'Mid Exam'),
-        ('semester', 'Semester Exam'),
-    )
-
-    title = models.CharField(max_length=200)
-    category = models.CharField(
-        max_length=20,
-        choices=CATEGORY_CHOICES,
-        default='inter'
-    )
-    exam_type = models.CharField(
-        max_length=20,
-        choices=EXAM_TYPE_CHOICES
-    )
-    file = models.FileField(upload_to='examinations/')
-    date = models.DateField(blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"{self.title} ({self.get_category_display()} - {self.get_exam_type_display()})"
 class Examination(models.Model):
     CATEGORY_CHOICES = (
         ('inter', 'Inter'),
