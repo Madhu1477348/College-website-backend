@@ -7,6 +7,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 from rest_framework.response import Response
 from django.core.mail import send_mail
 from django.conf import settings
+import logging
 
 # Import app-specific models and serializers
 from .models import Staff, Notification, Material, Branch, Subject, Syllabus, Examination,Popup
@@ -76,50 +77,46 @@ class ExaminationViewSet(viewsets.ModelViewSet):
         context = super().get_serializer_context()
         context["request"] = self.request
         return context
+logger = logging.getLogger(__name__)
 
-# ==========================================
-#  CONTACT API
-# ==========================================
 class ContactAPIView(APIView):
     permission_classes = [AllowAny]
 
     def post(self, request):
         data = request.data
-        try:
-            subject = f"New Contact Form Submission: {data.get('subject')}"
-            message = f"""
-            Name: {data.get('firstName')} {data.get('lastName')}
-            Email: {data.get('email')}
-            Subject: {data.get('subject')}
-            
-            Message:
-            {data.get('message')}
-            """
-            
-            # Using your existing send_email Utility if it works, or fallback to django send_mail
-            email_data = {
-                'email_body': message,
-                'to_email': 'madhuoffficial12@gmail.com',  # Your desired recipient email
-                'email_subject': subject
-            }
-            try:
-                # Try using the Util class first
-                Util.send_email(email_data)
-            except:
-                # Fallback to Django send_mail if Util fails or is missing config
-                send_mail(
-                    subject,
-                    message,
-                    settings.EMAIL_HOST_USER if hasattr(settings, 'EMAIL_HOST_USER') else 'noreply@college.edu',
-                    ['madhuoffficial12@gmail.com'],
-                    fail_silently=False,
-                )
 
-            return Response({"message": "Email sent successfully"}, status=status.HTTP_200_OK)
+        subject = f"New Contact Form Submission: {data.get('subject')}"
+        message = (
+            f"Name: {data.get('firstName')} {data.get('lastName')}\n"
+            f"Email: {data.get('email')}\n"
+            f"Subject: {data.get('subject')}\n\n"
+            f"Message:\n{data.get('message')}"
+        )
+
+        try:
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=["madhuoffficial12@gmail.com"],
+                fail_silently=False,  # 🔥 FORCE ERROR
+            )
+
+            return Response(
+                {"message": "Email sent successfully"},
+                status=status.HTTP_200_OK
+            )
+
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-        
+            logger.error("CONTACT EMAIL FAILED", exc_info=True)
+
+            return Response(
+                {
+                    "error": "Email sending failed",
+                    "details": str(e),
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         
 # Popup ViewSet
 
